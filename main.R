@@ -32,8 +32,9 @@ CostVsOutcome <- CostOutcome %>%
   geom_line(aes(y = Scaled, color = "ScaledLE"), linewidth=1) +
   guides(color = guide_legend(title = "Params")) +
   geom_vline(xintercept = 1966) +
-  ylab( "%GDP & Life Expectacy") +
-  xlab( "Cost up 248%  LifeExp up 13%" )
+  labs( title = "Healthcare: Spending vs Outcomes, since 1966", x = "Cost up 248%  LifeExp up 13%", y = "%GDP & Life Expectacy" ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
 
 # now show the graph
 CostVsOutcome
