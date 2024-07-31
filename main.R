@@ -19,6 +19,7 @@ nchs_long <- read_csv("data/NCHS_cleaned.csv")
 #CostOutcome <- merge( nhe_long, nchs_long, by = "Year")
 
 CostOutcome <- sqldf("SELECT nhe_long.Year, nhe_long.PCTGDP, nchs_long.LifeExpectancy FROM nhe_long, nchs_long WHERE nhe_long.Year = nchs_long.Year")
+
 #========================================================
 # add a column for life expectancy scaled to %gdp
 # 1966 life expectancy = 68.9 years, %GDP spending = 5%
