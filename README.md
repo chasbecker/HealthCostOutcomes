@@ -1,4 +1,4 @@
-This project was prompted by a friedn's Facebook post regarding the brokeness of the American
+This project was prompted by a friend's Facebook post regarding the brokeness of the American
 healthcare system.  That resonated with my professional experience with the US Gov't, where 
 everything seemed to be inordinately expensive.  Begin with the casually constructed research
 question, "Has US healthcare spending increased since the inception of Medicare more quickley
