@@ -6,7 +6,7 @@ So I normalized the life expectancy data by "LifeExpectancy/(68.9/5)" which is t
 expectancy to percent GDP spending in 1966 (the year after LBJ signed Medicare into law, denoted by
 the vertical black line on the graph).
 
-"SpendingOutcomes.png" takes you right to the bottom line.
+============>  "SpendingOutcomes.png" takes you right to the bottom line.  <============
 
 Quite obviously, there are a lot of legitimate questions about this methodology.  But as a 30,000 ft level
 overview of how healthcare outcomes have tracked healthcare spending I believe it's worth considering.
