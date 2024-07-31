@@ -18,6 +18,7 @@ nchs_long <- read_csv("data/NCHS_cleaned.csv")
 # this works and it's concise but also very R-specific
 #CostOutcome <- merge( nhe_long, nchs_long, by = "Year")
 
+# using SQL to facilitate future migration to an SQL db.
 CostOutcome <- sqldf("SELECT nhe_long.Year, nhe_long.PCTGDP, nchs_long.LifeExpectancy FROM nhe_long, nchs_long WHERE nhe_long.Year = nchs_long.Year")
 
 #========================================================
