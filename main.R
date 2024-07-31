@@ -72,5 +72,11 @@ CostVsOutcome
 # 6) Column names: nchs_long <- read_csv("data/NCHS_cleaned.csv")
 # colnames(nchs_long) <- c("Year", "LifeExp")
 # 
+#:::::::Data source/ETL (life expectancy [all races, both sexes]):
 # 
+# 1) From https://www.cms.gov/files/zip/national-health-expenditures-type-service-and-source-funds-cy-1960-2022.zip downloaded the XLSX format.
+# 2) Imported into GSheets;
+# 3) Did some stuff ... tbd
+
+
 # That prepared the data for analysis and visualization.
