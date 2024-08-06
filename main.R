@@ -1,5 +1,11 @@
+# I am currently re-writing this around a nicer, cleaner
+# data ETL process.  The dataframe references are temporarily
+# broken as I reorganize.  I'll have this back online
+# by the end of the week (8/9/2024  <- US-style agricentric format).
+
 # explanation of data ETL below the code
 
+setwd("G:/My Drive/R/HealthcareCostVsOutcomes")
 # start with a clean workspace :-/
 rm(list=ls())
 library(tidyverse)
@@ -23,8 +29,9 @@ CostOutcome <- sqldf("SELECT nhe_long.Year, nhe_long.PCTGDP, nchs_long.LifeExpec
 
 #========================================================
 # add a column for life expectancy scaled to %gdp
-# 1966 life expectancy = 68.9 years, %GDP spending = 5%
-CostOutcome$Scaled <- CostOutcome$LifeExpectancy/(68.9/5)
+# medicare goes into effect
+# 1966 life expectancy = 70.2 years, %GDP spending = 5.6%
+CostOutcome$Scaled <- CostOutcome$LifeExpectancy/(70.2/5.6)
 #========================================================
 
 CostVsOutcome <- CostOutcome %>% 
@@ -34,7 +41,7 @@ CostVsOutcome <- CostOutcome %>%
   geom_line(aes(y = Scaled, color = "ScaledLE"), linewidth=1) +
   guides(color = guide_legend(title = "Params")) +
   geom_vline(xintercept = 1966) +
-  labs( title = "Healthcare: Spending vs Outcomes, since 1966", x = "Cost up 248%  LifeExp up 13%", y = "%GDP & Life Expectacy" ) +
+  labs( title = "Healthcare: Spending vs Outcomes, since 1966", x = "Cost up 3.1X  LifeExp up 1.1X", y = "%GDP & Life Expectacy" ) +
   theme(plot.title = element_text(hjust = 0.5))
 
 
@@ -48,7 +55,7 @@ CostVsOutcome
 # In retrospect, this is a small and quite messy dataset.  It has freestyle header and footer text and the bulk of the tabular data is not of interest.  
 # 
 # Downloaded:
-#   "NHE Summary, including share of GDP, CY 1960-2022 (ZIP)"
+#   https://www.cms.gov/files/zip/nhe-summary-including-share-gdp-cy-1960-2022.zip
 # 
 # 1) "Extract all..." applied to the ZIP folder;
 # 2) Used Google Sheets to open ("Import") "NHE_Summary.xlsx";
