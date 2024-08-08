@@ -10,34 +10,29 @@ setwd("G:/My Drive/R/HealthcareCostVsOutcomes")
 rm(list=ls())
 library(tidyverse)
 library(sqldf)
+source("wide2long.R")
 
-nhe_wide <- read_csv("data/NHE22_cleaned.csv" )
-nhe_long <- pivot_longer(nhe_wide, cols = everything() )
-colnames(nhe_long) <- c("Year", "PCTGDP")
-nhe_long$Year <- as.numeric(nhe_long$Year)
+nhe_long <- wide2long("data/NHE_PctGDP.csv")
 
-nchs_long <- read_csv("data/NCHS_cleaned.csv")
+nchs_long <- read_csv("data/NCHS_LifeExpectancyAllRacesBothSexes.csv") # already in long format
 
-#str(nhe_long)
-#str(nchs_long)
-
-# this works and it's concise but also very R-specific
+# this works and it's concise but also R-specific
 #CostOutcome <- merge( nhe_long, nchs_long, by = "Year")
 
 # using SQL to facilitate future migration to an SQL db.
-CostOutcome <- sqldf("SELECT nhe_long.Year, nhe_long.PCTGDP, nchs_long.LifeExpectancy FROM nhe_long, nchs_long WHERE nhe_long.Year = nchs_long.Year")
+CostOutcome <- sqldf("SELECT nhe_long.Year, nhe_long.PCTGDP, nchs_long.AvgLifeExpect FROM nhe_long, nchs_long WHERE nhe_long.Year = nchs_long.Year")
 
 #========================================================
 # add a column for life expectancy scaled to %gdp
 # medicare goes into effect
 # 1966 life expectancy = 70.2 years, %GDP spending = 5.6%
-CostOutcome$Scaled <- CostOutcome$LifeExpectancy/(70.2/5.6)
+CostOutcome$Scaled <- CostOutcome$AvgLifeExpect/(70.2/5.6)
 #========================================================
 
 CostVsOutcome <- CostOutcome %>% 
   ggplot(aes(x = Year)) +
   geom_line(aes(y = PCTGDP, color = "PCTGDP"), linewidth=1) +
-  geom_line(aes(y = LifeExpectancy, color = "LifeExp"), linewidth=0.5) +
+  geom_line(aes(y = AvgLifeExpect, color = "LifeExp"), linewidth=0.5) +
   geom_line(aes(y = Scaled, color = "ScaledLE"), linewidth=1) +
   guides(color = guide_legend(title = "Params")) +
   geom_vline(xintercept = 1966) +
@@ -50,7 +45,7 @@ CostVsOutcome
 
 
 
-#:::::::: Data source/ETL: https://www.cms.gov/data-research/statistics-trends-and-reports/national-health-expenditure-data/historical
+#:::::::: Data source/ETL (see "Sources.txt" ::::::::
 # 
 # In retrospect, this is a small and quite messy dataset.  It has freestyle header and footer text and the bulk of the tabular data is not of interest.  
 # 
@@ -61,29 +56,18 @@ CostVsOutcome
 # 2) Used Google Sheets to open ("Import") "NHE_Summary.xlsx";
 # 3) Deleted all rows except the original Rows 2 and 31 (becoming Rows 1 & 2);
 # 4) Deleted Column A to get rid of chr names;
-# 6) Saved ("Download") data in CSV format as "NHE_cleaned.csv";
-# 7) Read that into an R data.frame and reformatted in R:
+# 6) Saved ("Download") data in CSV format as "data/NHE_PctGDP.csv";
+# 7) Read that into an R data.frame and reformatted in R using "wide2long":
+#   nhe_long <- wide2long("data/NHE_PctGDP.csv")
 #   
-#   nhe_wide <- read_csv("data/NHE22_cleaned.csv")
-#   nhe_long <- pivot_longer(nhe_wide, cols=everything())
-#   colnames(nhe_long) <- c("Year", "PCTGDP")
 #   
-#:::::::Data source/ETL (life expectancy [all races, both sexes]):
+#:::::::Data source/ETL (by year, life expectancy [all races, both sexes]):
 # 
 # 1) From https://catalog.data.gov/dataset/nchs-death-rates-and-life-expectancy-at-birth downloaded the CSV format;
 # 2) Imported into GSheets;
 # 3) Kept Rows 1 - 120 (all races, both sexes);
-# 4) Kept only Column A & D (became A & B);
-# 5) renamed Column B to "LifeExpectancy";
-# 5) Saved/"Download" as "LifeExpectancy_cleaned.csv";
-# 6) Column names: nchs_long <- read_csv("data/NCHS_cleaned.csv")
-# colnames(nchs_long) <- c("Year", "LifeExp")
-# 
-#:::::::Data source/ETL (life expectancy [all races, both sexes]):
-# 
-# 1) From https://www.cms.gov/files/zip/national-health-expenditures-type-service-and-source-funds-cy-1960-2022.zip downloaded the XLSX format.
-# 2) Imported into GSheets;
-# 3) Did some stuff ... tbd
-
-
-# That prepared the data for analysis and visualization.
+# 4) Kept Columns: Year,Race,Sex,AvgerageLifeExpectancy
+# 5) renamed AvgLifeExpect";
+# 5) Saved/"Download" as "LifeExpectancyAllRacesBothSexes.csv";
+# 6) Read into a data.frame with nchs_long <- read_csv("data/LifeExpectancyAllRacesBothSexes.csv")
+# EOF
