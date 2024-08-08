@@ -1,9 +1,4 @@
-# I am currently re-writing this around a nicer, cleaner
-# data ETL process.  The dataframe references are temporarily
-# broken as I reorganize.  I'll have this back online
-# by the end of the week (8/9/2024  <- US-style agricentric format).
-
-# explanation of data ETL below the code
+# Rewritten with 'wide2long' function for transposing wide data to long (duh).
 
 setwd("G:/My Drive/R/HealthcareCostVsOutcomes")
 # start with a clean workspace :-/
@@ -23,9 +18,9 @@ nchs_long <- read_csv("data/NCHS_LifeExpectancyAllRacesBothSexes.csv") # already
 CostOutcome <- sqldf("SELECT nhe_long.Year, nhe_long.PCTGDP, nchs_long.AvgLifeExpect FROM nhe_long, nchs_long WHERE nhe_long.Year = nchs_long.Year")
 
 #========================================================
-# add a column for life expectancy scaled to %gdp
-# medicare goes into effect
-# 1966 life expectancy = 70.2 years, %GDP spending = 5.6%
+# add a column for life expectancy scaled to %GDP
+# medicare goes into effect 1966,
+# life expectancy = 70.2 years, %GDP spending = 5.6%
 CostOutcome$Scaled <- CostOutcome$AvgLifeExpect/(70.2/5.6)
 #========================================================
 
