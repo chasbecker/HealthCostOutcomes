@@ -1,10 +1,13 @@
-# Rewritten with 'wide2long' function for transposing wide data to long (duh).
+# Rewritten with 'wide2long' function in library(CLBUtils) for transposing wide data to long (duh).  Or can still use "source(wide2long)".
 
 setwd("G:/My Drive/R/HealthcareCostVsOutcomes")
 # start with a clean workspace :-/
 rm(list=ls())
 library(tidyverse)
 library(sqldf)
+# either this
+library(CLBUtils)
+# or that
 source("wide2long.R")
 
 nhe_long <- wide2long("data/NHE_PctGDP.csv")
@@ -14,7 +17,9 @@ nchs_long <- read_csv("data/NCHS_LifeExpectancyAllRacesBothSexes.csv") # already
 # this works and it's concise but also R-specific
 #CostOutcome <- merge( nhe_long, nchs_long, by = "Year")
 
+
 # using SQL to facilitate future migration to an SQL db.
+
 CostOutcome <- sqldf("SELECT nhe_long.Year, nhe_long.PCTGDP, nchs_long.AvgLifeExpect FROM nhe_long, nchs_long WHERE nhe_long.Year = nchs_long.Year")
 
 #========================================================
